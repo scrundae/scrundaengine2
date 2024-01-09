@@ -6,15 +6,19 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Net.Mail;
 using System.IO;
+using System.Media;
+using System.Windows;
 
 namespace scrundaengine_2
 {
+    [Serializable]
     public class Actor
     {
-        private PictureBox pictureBox;
+        public PictureBox pictureBox;
         public int positionX;
         public int positionY;
         private System.Windows.Forms.Timer posReporter;
+        public Image photo;
 
         // Create and configure the PictureBox in a separate method.
         public void InitializeActor()
@@ -27,7 +31,7 @@ namespace scrundaengine_2
             posReporter.Enabled = true;
             posReporter.Interval = 1;
             posReporter.Tick += OnTick;
-            
+
             posReporter.Start();
         }
 
@@ -104,14 +108,10 @@ namespace scrundaengine_2
             positionY = pictureBox.Location.Y;
         }
     }
-    //continue
-    public interface ActorAugmentation
-    {
-        
-    }
     public class Scene
     {
         public Panel world;
+        
         public void LoadScene(Form form)
         {
             world = new Panel();
@@ -141,10 +141,12 @@ namespace scrundaengine_2
         System.Windows.Forms.Timer KeyCheck;
         public void InitializeConsole(Form form, bool displayConsoleOnStartup)
         {
+            
             console = new ListBox();
+            console.Font = new System.Drawing.Font("Tahoma", 8.25f, FontStyle.Regular);
             console.Dock = DockStyle.Top;
             console.Visible = displayConsoleOnStartup;
-            Report("scrundaengine v2");
+            Report("Console initialized!");
             stfA = new System.Windows.Forms.Timer();
             stfA.Enabled = true;
             stfA.Interval = 1;
@@ -155,7 +157,21 @@ namespace scrundaengine_2
         }
         public void Report(string text)
         {
-            console.Items.Insert(0, "[" + DateTime.Now + "] " + text);
+            console.Items.Insert(0, "[" + DateTime.Now + "] " + text); ;
+        }
+        public void Refresh(bool tell)
+        {
+            int items;
+            items = console.Items.Count;
+            console.Items.Clear();
+            if (tell == true)
+            {
+                Report("Cleared " + items + " entries.");
+            }
+            else
+            {
+
+            }
         }
         public void ShowConsole(bool yON)
         {
@@ -203,13 +219,44 @@ namespace scrundaengine_2
             scene.world.Controls.Add(button);
         }
     }
+    [Serializable]
     public class GameMode
     {
         public string title = "Name your GameMode with the 'title' variable";
         public string description = "Describe your GameMode with the 'description' variable";
+        public string author = "Set the author of the GameMode with the 'author' variable.";
+    }
+    public class Difficulty
+    {
+        public string title = "Name your difficulty with the 'title' variable";
+        public string description = "Describe your difficulty with the 'description' variable";
     }
     public static class Game
     {
-        public static GameMode gameMode;
+        public static GameMode GameMode;
+
+        public static Difficulty Difficulty;
+
+        public static Form MainWindow;
+
+        public static string Username;
+
+        public static Infoholic MainInfoholic;
+
+        public static void Fullscreen(bool boolean, Form form, FormBorderStyle umfbs)
+        {
+            if (boolean == true)
+            {
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.TopMost = true;
+                form.WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                form.FormBorderStyle = umfbs;
+                form.TopMost = true;
+                form.WindowState = FormWindowState.Normal;
+            }
+        }
     }
 }
